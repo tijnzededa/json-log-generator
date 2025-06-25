@@ -3,27 +3,23 @@ kind: Deployment
 metadata:
   name: {{ include "json-log-generator.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "json-log-generator.name" . }}
-    {{- with .Values.podLabels }}
-    {{ toYaml . | indent 4 }}
-    {{- end }}
+    {{- include "json-log-generator.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "json-log-generator.name" . }}
+      {{- include "json-log-generator.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "json-log-generator.name" . }}
+        {{- include "json-log-generator.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
-        {{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
       containers:
-        - name: json-log-generator
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          # Logs output to stdout, no ports needed
