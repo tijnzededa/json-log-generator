@@ -1,0 +1,19 @@
+replicaCount: 1
+
+image:
+  repository: tijnzededa/json-log-generator
+  tag: latest
+  pullPolicy: Always
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+podLabels:
+  environment: test
+  component: log-generator
+
